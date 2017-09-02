@@ -1,0 +1,157 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<!-- SITE TITLE -->
+	<title>{{title}} - Smart Andon System</title>
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+	<!-- Font-Awesome CSS -->
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+	<!-- MasterPage CSS -->
+	<link rel="stylesheet" href="{% static 'css/MasterPage.css' %}">
+	<!-- Google Analytics -->
+	<!-- <script> -->
+	<!-- (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ -->
+	<!-- (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), -->
+	<!-- m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) -->
+	<!-- })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); -->
+
+	<!-- ga('create', 'UA-73358817-1', 'auto'); -->
+	<!-- ga('send', 'pageview'); -->
+
+	<!-- </script> -->
+	{% block head %}{% endblock %}
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href=".">Smart Andon System</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a href=".">Home</a></li>
+					<li><a href="admin">Admin</a></li>
+					<li><a href="Dashboard">Dashboard</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<form class="navbar-form navbar-right">
+						{% csrf_token %}
+						<div class="form-group">
+							<input type="text" placeholder="Station ID" class="form-control" id="SID_input">
+							<input type="password" placeholder="Code" class="form-control" id="Code">
+						</div>
+						<button type="button" class="btn btn-success" onclick="setSID()">Set Station ID</button>
+					</form>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container body-content">
+		<div class="alert alert-danger alert-dismissible" role="alert" style="margin-top: 5px">
+			<h2><strong>Warning!</strong> Issued Raised!</h2>
+			<p>
+				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#AckModal" style="font-size: 24px">Acknowledgement</button>
+			</p>
+		</div>			
+		<div class="modal fade" tabindex="-1" id="AckModal" role="dialog" aria-labelledby="AckModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Acknowledgement</h4>
+					</div>
+					<form method="POST" action="acknowledgement">
+						{% csrf_token %}
+						<div class="modal-body">
+							<p>
+								<div class="form-group">
+									<label>Support Personnel UID</label>
+									<input type="text" class="form-control" id="UID" name="UID" placeholder="Support Personnel UID" required></input>
+									<input type="hidden" id="station_id" name="station_id" class="form-control">
+								</div>
+							</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</div>
+					</form>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		<div class="jumbotron">
+			<h1 id="SID_header">Station ID: Not Set</h1>
+			<p>&nbsp;</p>
+			{% block content %}{% endblock %}
+		</div>
+		<hr />
+		<footer>
+			<h4>&copy; {% now "Y" %} - Smart Andon System</h4>
+		</footer>
+	</div>
+	<!-- Jquery js -->
+	<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script>
+	<!-- Bootstrap js -->
+	<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+	<!-- Page Script -->
+	<script>
+		$(function() {
+			$('.alert').hide();
+
+			{% if ErrMsg %}
+			    alert("{{ ErrMsg }}");
+			{% endif %}
+
+			var issused_stations = [];
+			{% for Issue in Issues %}
+				issused_stations.push("{{ Issue.workstation_id }}");
+				if (localStorage.SID === "{{ Issue.workstation_id }}")
+				{
+					$('.alert').fadeIn('slow');
+					$("#btnEngineer").toggleClass('disabled', true)
+					$("#btnSupervisor").toggleClass('disabled', true)
+				}
+			{% endfor %}
+
+			if (typeof(Storage) !== "undefined") {					
+				if (localStorage.SID) {
+					$("#SID_header").text("Station ID: " + localStorage.SID);
+					$("#SID_input").val(localStorage.SID);
+					$("#station_id").val(localStorage.SID);
+				}
+			}
+		});
+
+		function setSID() {
+			if (typeof(Storage) !== "undefined") {
+				if ($("#Code").val() !== "0134")
+				{
+					alert("Invaild Code.")
+					return;
+				}
+				var SID = $("#SID_input").val();
+				if (!isNaN(parseInt(SID))) {
+					localStorage.SID = SID;
+					$("#SID_header").text("Station ID: " + SID);
+					location.reload(true);
+				}
+				else {
+					alert("Station ID is invaild!");
+				}
+			}
+		}
+	</script>
+</body>
+</html>								

@@ -1,0 +1,27 @@
+{% extends "./AdminMasterPage.html" %}
+{% load staticfiles %}
+
+{% block head %}	
+	<!-- Datatable Plugins CSS -->
+	<link rel="stylesheet" href="{% static 'Admin/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css' %}">
+	{% block head_datatable %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+	{% block content_datatable %}{% endblock %}
+{% endblock %}
+
+{% block tail %}
+	<!-- Datatable Plugins js -->
+	<script src="{% static 'Admin/plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/jszip.min.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/pdfmake.min.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/vfs_fonts.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/buttons.html5.min.js' %}"></script>
+	<script src="{% static 'Admin/plugins/jquery-datatable/extensions/export/buttons.print.min.js' %}"></script>
+	<script src="{% static 'Admin/js/jquery-datatable.js' %}"></script>
+	{% block tail_datatable %}{% endblock %}
+{% endblock %}

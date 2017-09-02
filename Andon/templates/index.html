@@ -1,0 +1,99 @@
+{% extends "MasterPage/MasterPage.html" %}
+
+{% block head %}
+<style type="text/css">
+	.glyphicon {
+		font-size: 56px;
+	}
+	.breadcrumb li {
+		font-size: 40px;
+		display: inline;
+	}
+	a.custom {
+		height: 100px;
+		width: 100%;
+		font-size: 44px;    
+		color: #fff;
+		background-color: #337ab7;
+		border-color: #2e6da4;
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+		-ms-touch-action: manipulation;
+		touch-action: manipulation;
+		cursor: pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		background-image: none;
+		border: 1px solid transparent;
+		border-radius: 4px;
+	}
+</style>
+{% endblock %}a
+{% block content %}
+<p>
+	<div class="btn-group">
+		<button id="btnEngineer" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Engineering <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			{% for Concern in Concerns %}
+				{% if Concern.has_child %}
+					<li><a href="subIndex?parent_id={{ Concern.id }}">{{ Concern.name }}&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-share-alt"></span></a></li>
+				{% else %}
+					<li><a href="notify?cid={{ Concern.id }}">{{ Concern.name }}</a></li>
+				{% endif %}
+				{% if not forloop.last %}
+					<li role="separator" class="divider"></li>
+				{% endif %}
+			{% endfor %}
+		</ul>
+	</div>
+	<p>&nbsp;</p>
+	<div class="btn-group">
+		<button id="btnSupervisor" type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Supervisor <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a href="#">Action</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Another action</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Something else here</a></li>
+		</ul>
+	</div>
+	<p>&nbsp;</p>
+	<div class="btn-group">
+		<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled="true">
+			Empty 1 <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a href="#">Action</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Another action</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Something else here</a></li>
+		</ul>
+	</div>
+	<p>&nbsp;</p>
+	<div class="btn-group">
+		<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled="true">
+			Empty 2 <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a href="#">Action</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Another action</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#">Something else here</a></li>
+		</ul>
+	</div>
+</p>
+{% endblock %}

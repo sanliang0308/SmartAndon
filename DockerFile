@@ -1,0 +1,8 @@
+FROM python:2.7-slim
+WORKDIR /app
+ADD . /app
+RUN apt-get update
+RUN apt-get install -y libmariadbclient
+RUN pip install django==1.11.3
+RUN pip install requests
+EXPOSE 8000

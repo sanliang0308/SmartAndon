@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- Font-Awesome CSS -->
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+</head>
+<body>
+	<form id="fm" method="POST" action="sendNotification" hidden="true">
+		{% csrf_token %}
+		<input type="input" id="concern_id" name="concern_id" class="form-control" value="{{ cid }}">
+		<input type="input" id="station_id" name="station_id" class="form-control">
+		<button type="submit">Submit</button>
+	</form>
+	<div id="spin"></div>
+	<!-- Jquery js -->
+	<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+	<!-- Jquery Spinner js -->
+	<script src="{% static 'js/jquery.babypaunch.spinner.min.js' %}"></script>
+	<script>
+		$(function() {
+			if (typeof(Storage) !== "undefined") {					
+				if (localStorage.SID) {
+					$("#station_id").val(localStorage.SID);
+					$("#fm").submit();
+				}
+			}
+			$("#spin").spinner({
+				background: "rgba(0,0,0,0.6)"
+				, html: "<i class='fa fa-repeat' style='color: #fff;'></i>"
+			});
+			$("#spin").show();
+		});
+	</script>
+</body>
+</html>

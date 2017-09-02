@@ -1,0 +1,132 @@
+{% extends "MasterPage/AdminMasterPage.html" %}
+
+{% block content %}
+<div class="container-fluid">
+	<div class="block-header">
+		<h1>Dashboard</h1>
+	</div>
+
+	<!-- Widgets -->
+	<div class="row clearfix">
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="info-box bg-pink hover-expand-effect">
+				<div class="icon">
+					<i class="material-icons">account_box</i>
+				</div>
+				<div class="content">
+					<div class="text">Staff Present</div>
+					<div class="number count-to" data-from="0" data-to="<%=cur_staff%>" data-speed="1000" data-fresh-interval="20"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="info-box bg-cyan hover-expand-effect">
+				<div class="icon">
+					<i class="material-icons">perm_identity</i>
+				</div>
+				<div class="content">
+					<div class="text">Student Present</div>
+					<div class="number count-to" data-from="0" data-to="<%=cur_student%>" data-speed="1000" data-fresh-interval="20"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="info-box bg-light-green hover-expand-effect">
+				<div class="icon">
+					<i class="material-icons">perm_contact_calendar</i>
+				</div>
+				<div class="content">
+					<div class="text">Total Staff</div>
+					<div class="number count-to" data-from="0" data-to="<%=total_staff%>" data-speed="1000" data-fresh-interval="20"></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="info-box bg-orange hover-expand-effect">
+				<div class="icon">
+					<i class="material-icons">assignment_ind</i>
+				</div>
+				<div class="content">
+					<div class="text">Total Student</div>
+					<div class="number count-to" data-from="0" data-to="<%=total_student%>" data-speed="1000" data-fresh-interval="20"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- #END# Widgets -->
+
+	<div class="row clearfix">
+		<!-- TotalIssuesByConcern -->
+		<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+			<div class="card">
+				<div class="header">
+					<h2>Total Issues : <b>{{ TotalIssues }}</b></h2>
+				</div>
+				<div class="body">
+					<table class="table table-hover dashboard-task-infos">
+						<thead>
+							<tr>
+								<th>Concern</th>
+								<th>Level</th>
+								<th>Count</th>
+							</tr>
+						</thead>
+						<tbody>
+							<div class="table-responsive">
+								{% for issue in TotalIssuesByConcern %}
+								<tr>
+									<td>
+										{{ issue.name }}
+									</td>
+									<td>
+										<span class="label bg-{{ issue.color }}">{{ issue.status }}</span>
+									</td>
+									<td>
+										<div class="progress">
+											<div class="progress-bar bg-{{ issue.color }}" role="progressbar" aria-valuenow="{{ issue.count_issue }}" aria-valuemin="0" aria-valuemax="{{ TotalIssues }}" style="width: {% widthratio issue.count_issue TotalIssues 100 %}%"></div>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+
+							</div>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- #END# TotalIssuesByConcern -->
+
+		<!-- SolvedIssueBySupportPersonnel  -->
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+			<div class="card">
+				<div class="header">
+					<h2>Total Acknowledgements: <b>{{ TotalSolvedIssues }}</b></h2>
+				</div>
+				<div class="body">
+					<div id="donut_chart" class="dashboard-donut-chart"></div>
+				</div>
+			</div>
+		</div>
+		<!-- #END# SolvedIssueBySupportPersonnel -->
+
+	</div>
+</div>
+{% endblock %}
+
+{% block tail %}
+<!-- Page Script -->
+<script>
+	$(function () {
+		var datas = [];
+		{% for SolvedIssueBySupportPersonnel in SolvedIssuesBySupportPersonnel %}
+			var data = { label: '{{ SolvedIssueBySupportPersonnel.name }}', value: {% widthratio SolvedIssueBySupportPersonnel.count_acknowledgement TotalSolvedIssues 100.0 %} };
+			datas.push(data);
+		{% endfor %}
+		var DonutChartData = {element: 'donut_chart', data: datas, colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'], formatter: function(y) { return y + '%' }, resize: true};
+		//Widgets count
+		$('.count-to').countTo();
+		Morris.Donut(DonutChartData);
+	});
+</script>
+{% endblock %}

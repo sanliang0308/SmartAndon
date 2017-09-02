@@ -1,0 +1,65 @@
+{% extends "MasterPage/DatatableAdminMasterPage.html" %}
+
+{% block content_datatable %}
+<div class="container-fluid">
+	<div class="row clearfix">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="card">
+				<div class="header">
+					<h2>
+						{{ title }}
+					</h2>
+				</div>
+				<table class="table table-bordered table-striped table-hover dataTable jsDT-view">
+					<thead>
+						<tr>
+							<th>Index</th>
+							<th>Name</th>
+							<th>UID</th>
+							<th>PhoneNo</th>
+							<th>Email</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for SupportPersonnel in SupportPersonnels %}
+							<tr>
+								<td>{{ SupportPersonnel.id }}</td>
+								<td>{{ SupportPersonnel.name }}</td>
+								<td>{{ SupportPersonnel.uid }}</td>
+								<td>{{ SupportPersonnel.phoneNo }}</td>
+								<td>{{ SupportPersonnel.email }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Index</th>
+							<th>Name</th>
+							<th>UID</th>
+							<th>PhoneNo</th>
+							<th>Email</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block tail_datatable %}
+<!-- Page Script -->
+<script>
+	$(function () {
+		var datas = [];
+		{% for SolvedIssueBySupportPersonnel in SolvedIssuesBySupportPersonnel %}
+		var data = { label: '{{ SolvedIssueBySupportPersonnel.name }}', value: {% widthratio SolvedIssueBySupportPersonnel.count_acknowledgement TotalSolvedIssues 100.0 %} };
+		datas.push(data);
+		{% endfor %}
+		var DonutChartData = {element: 'donut_chart', data: datas, colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'], formatter: function(y) { return y + '%' }, resize: true};
+		//Widgets count
+		$('.count-to').countTo();
+		Morris.Donut(DonutChartData);
+	});
+</script>
+{% endblock %}
