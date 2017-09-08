@@ -6,7 +6,7 @@ from django.conf import settings
 import requests
 import json
 
-QIO = False
+QIO = True
 
 # Create your views here.
 from django.db.models import Count
@@ -78,17 +78,30 @@ def sendMail(station_id, recipient_email, concern_name, timestamp):
 	response = requests.post(url, data = data_json, headers = headers)
 
 def testnotify(request):
+	# if QIO:
+	# 	url = 'http://10.228.240.51:3000/MMservices/Email'
+	# else:
+	# 	url = 'http://127.0.0.1:3000/MMservices/Email'
+	# TO = ['fenghao@ntu.edu.sg', 'RRERT4.2@gmail.com']
+	# SUBJECT = '%s Raised on Station ID: %s' % (1, 2)
+	# TEXT = '%s Raised on Station ID: %s @ %s' % (1, 2, 3)
+	# data = {
+	# 	"recipient": TO,
+	# 	"subject": SUBJECT,
+	# 	"body": TEXT
+	# }
+	# data_json = json.dumps(data)
+	# headers = {'Content-type': 'application/json'}
+	# response = requests.post(url, data = data_json, headers = headers)
 	if QIO:
-		url = 'http://10.228.240.51:3000/MMservices/Email'
+		url = 'http://10.228.240.51:3000/MMservices/SMS'
 	else:
-		url = 'http://127.0.0.1:3000/MMservices/Email'
-	TO = ['fenghao@ntu.edu.sg', 'RRERT4.2@gmail.com']
-	SUBJECT = '%s Raised on Station ID: %s' % (1, 2)
-	TEXT = '%s Raised on Station ID: %s @ %s' % (1, 2, 3)
+		url = 'http://127.0.0.1:3000/MMservices/SMS'
+	TO = [96220394, 88766323]
+	SUBJECT = '%s Raised on Station ID: %s @ %s' % (1, 2, 3)
 	data = {
-		"recipient": TO,
-		"subject": SUBJECT,
-		"body": TEXT
+		"number": TO,
+		"message": SUBJECT
 	}
 	data_json = json.dumps(data)
 	headers = {'Content-type': 'application/json'}
