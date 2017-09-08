@@ -5,6 +5,11 @@
 	<!-- Datatable Plugins CSS -->
 	<link rel="stylesheet" href="{% static 'Admin/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.min.css' %}">
 	{% block head_datatable %}{% endblock %}
+	<style type="text/css">
+		.dataTables_wrapper .dt-buttons {
+			top: 10px;
+		}
+	</style>
 {% endblock %}
 
 {% block content %}

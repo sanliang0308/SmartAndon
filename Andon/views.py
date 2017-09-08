@@ -6,6 +6,8 @@ from django.conf import settings
 import requests
 import json
 
+QIO = False
+
 # Create your views here.
 from django.db.models import Count
 from Andon.models import Concern
@@ -36,19 +38,21 @@ def sendNotification(request):
 	for relation in relations:
 		recipient_email.append(relation.supportPersonnel.email)
 		recipient_phoneNo.append(relation.supportPersonnel.phoneNo)
+	request.session['ErrMsg'] = None
 	try:
 		issue = Issue.objects.all().filter(workstation_id = station_id, acked = 0)
 		if issue.count() == 0:
 			issue = Issue(workstation_id = station_id, concern = concern)
 			issue.save()
 		timestamp = issue.issue_raised_timestamp
-		e = sendMail(station_id, recipient_email, concern, timestamp)
-		if e is not None:
+		try:
+			sendMail(station_id, recipient_email, concern, timestamp)
+		except Exception as e:
 			request.session['ErrMsg'] = str(e)
 			# return HttpResponse(e)
 		# e = sendSMSrequest(station_id, recipient_phoneNo, concern, timestamp)
-		if e is not None:
-			request.session['ErrMsg'] = str(e)
+		# if e is not None:
+		# 	request.session['ErrMsg'] = str(e)
 			# return HttpResponse(e)
 		return HttpResponseRedirect(reverse('Andon:index'))
 	except Exception as e:
@@ -57,8 +61,8 @@ def sendNotification(request):
 	return HttpResponseRedirect(reverse('Andon:index'))
 
 def sendMail(station_id, recipient_email, concern_name, timestamp):
-	if settings.QIO:
-		url = 'http://192.168.1.233:3000/MMservices/Email'
+	if QIO:
+		url = 'http://10.228.240.51:3000/MMservices/Email'
 	else:
 		url = 'http://127.0.0.1:3000/MMservices/Email'
 	TO = recipient_email
@@ -72,11 +76,10 @@ def sendMail(station_id, recipient_email, concern_name, timestamp):
 	data_json = json.dumps(data)
 	headers = {'Content-type': 'application/json'}
 	response = requests.post(url, data = data_json, headers = headers)
-	pprint.pprint(response.json())
 
 def testnotify(request):
-	if settings.QIO:
-		url = 'http://192.168.1.233:3000/MMservices/Email'
+	if QIO:
+		url = 'http://10.228.240.51:3000/MMservices/Email'
 	else:
 		url = 'http://127.0.0.1:3000/MMservices/Email'
 	TO = ['fenghao@ntu.edu.sg', 'RRERT4.2@gmail.com']
@@ -149,8 +152,12 @@ def Dashboard(request):
 		issue = {'name': concern.name, 'count_issue': count_issue, 'color': color, 'status': status}
 		TotalIssuesByConcern.append(issue)
 	SolvedIssuesBySupportPersonnel = SupportPersonnel.objects.annotate(count_acknowledgement = Count('acknowledgement'))
+	total_supportpersonnel = SupportPersonnel.objects.all().count()	
+	total_concern = Concern.objects.all().count() - 1
+	current_issue = Issue.objects.filter(acked = 0).count()
 	return render(request, 'Dashboard.html', {'title': 'Dashboard', 'TotalIssues': TotalIssues, 'TotalSolvedIssues': TotalSolvedIssues,
-		'TotalIssuesByConcern': TotalIssuesByConcern, 'SolvedIssuesBySupportPersonnel': SolvedIssuesBySupportPersonnel})
+		'TotalIssuesByConcern': TotalIssuesByConcern, 'SolvedIssuesBySupportPersonnel': SolvedIssuesBySupportPersonnel, 
+		'total_supportpersonnel':total_supportpersonnel, 'total_concern': total_concern, 'current_issue': current_issue})
 
 def viewConcern(request):
 	Root_Concerns = Concern.objects.filter(parent_id = 1).exclude(id = 1)

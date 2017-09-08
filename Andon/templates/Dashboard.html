@@ -14,8 +14,8 @@
 					<i class="material-icons">account_box</i>
 				</div>
 				<div class="content">
-					<div class="text">Staff Present</div>
-					<div class="number count-to" data-from="0" data-to="<%=cur_staff%>" data-speed="1000" data-fresh-interval="20"></div>
+					<div class="text">Current Open Issues</div>
+					<div class="number count-to" data-from="0" data-to="{{ current_issue }}" data-speed="1000" data-fresh-interval="20"></div>
 				</div>
 			</div>
 		</div>
@@ -25,8 +25,8 @@
 					<i class="material-icons">perm_identity</i>
 				</div>
 				<div class="content">
-					<div class="text">Student Present</div>
-					<div class="number count-to" data-from="0" data-to="<%=cur_student%>" data-speed="1000" data-fresh-interval="20"></div>
+					<div class="text">Empty</div>
+					<div class="number count-to" data-from="0" data-to="{{ 0 }}" data-speed="1000" data-fresh-interval="20"></div>
 				</div>
 			</div>
 		</div>
@@ -36,8 +36,8 @@
 					<i class="material-icons">perm_contact_calendar</i>
 				</div>
 				<div class="content">
-					<div class="text">Total Staff</div>
-					<div class="number count-to" data-from="0" data-to="<%=total_staff%>" data-speed="1000" data-fresh-interval="20"></div>
+					<div class="text">Total Concerns</div>
+					<div class="number count-to" data-from="0" data-to="{{ total_concern }}" data-speed="1000" data-fresh-interval="20"></div>
 				</div>
 			</div>
 		</div>
@@ -47,8 +47,8 @@
 					<i class="material-icons">assignment_ind</i>
 				</div>
 				<div class="content">
-					<div class="text">Total Student</div>
-					<div class="number count-to" data-from="0" data-to="<%=total_student%>" data-speed="1000" data-fresh-interval="20"></div>
+					<div class="text">Total Support Personnels</div>
+					<div class="number count-to" data-from="0" data-to="{{ total_supportpersonnel }}" data-speed="1000" data-fresh-interval="20"></div>
 				</div>
 			</div>
 		</div>

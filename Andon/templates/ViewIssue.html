@@ -1,4 +1,12 @@
 {% extends "MasterPage/DatatableAdminMasterPage.html" %}
+{% load staticfiles %}
+
+{% block head_datatable %}
+<link rel="stylesheet" href="{% static 'Admin/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}">
+<link rel="stylesheet" href="{% static 'Admin/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}">
+<style type="text/css">
+</style>
+{% endblock %}
 
 {% block content_datatable %}
 <div class="container-fluid">
@@ -10,34 +18,45 @@
 						{{ title }}
 					</h2>
 				</div>
+				<table border="0" cellspacing="5" cellpadding="5">
+					<tbody>
+						<tr>
+							<td>Start Date:</td>
+							<td><input type="text" id="startDate" name="startDate" onkeydown="return false"></td>
+							<td width="50px"></td>
+							<td>End Date:</td>
+							<td><input type="text" id="endDate" name="endDate" onkeydown="return false"></td>
+						</tr>
+					</tbody>
+				</table>
 				<table class="table table-bordered table-striped table-hover dataTable jsDT-view">
 					<thead>
 						<tr>
 							<th>Index</th>
-							<th>Raised Timestamp</th>
 							<th>Workstation ID</th>
-							<th>Acked</th>
 							<th>Concern</th>
+							<th>Raised Timestamp</th>
+							<th>Acked</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for Issue in Issues %}
-							<tr>
-								<td>{{ Issue.id }}</td>
-								<td>{{ Issue.issue_raised_timestamp }}</td>
-								<td>{{ Issue.workstation_id }}</td>
-								<td>{{ Issue.acked }}</td>
-								<td>{{ Issue.concern }}</td>
-							</tr>
+						<tr>
+							<td>{{ Issue.id }}</td>
+							<td>{{ Issue.workstation_id }}</td>
+							<td>{{ Issue.concern }}</td>
+							<td>{{ Issue.issue_raised_timestamp|date:'Y-m-d H:i:s' }}</td>
+							<td>{% if Issue.acked %}True{% else %}False{% endif %}</td>
+						</tr>
 						{% endfor %}
 					</tbody>
 					<tfoot>
 						<tr>
 							<th>Index</th>
-							<th>Raised Timestamp</th>
 							<th>Workstation ID</th>
-							<th>Acked</th>
 							<th>Concern</th>
+							<th>Raised Timestamp</th>
+							<th>Acked</th>
 						</tr>
 					</tfoot>
 				</table>
@@ -49,17 +68,49 @@
 
 {% block tail_datatable %}
 <!-- Page Script -->
+<script src="{% static 'Admin/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js' %}"></script>
 <script>
 	$(function () {
-		var datas = [];
-		{% for SolvedIssueBySupportPersonnel in SolvedIssuesBySupportPersonnel %}
-		var data = { label: '{{ SolvedIssueBySupportPersonnel.name }}', value: {% widthratio SolvedIssueBySupportPersonnel.count_acknowledgement TotalSolvedIssues 100.0 %} };
-		datas.push(data);
-		{% endfor %}
-		var DonutChartData = {element: 'donut_chart', data: datas, colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'], formatter: function(y) { return y + '%' }, resize: true};
-		//Widgets count
-		$('.count-to').countTo();
-		Morris.Donut(DonutChartData);
+		var selected_start_date = new Date(1970, 1, 1, 0, 0, 0, 0);
+		var selected_end_date = new Date(2099, 12, 31, 23, 59, 59, 999);
+		$('#startDate').datepicker({
+			autoclose: true,
+			format: 'dd/mm/yyyy',
+			todayBtn: "linked",
+			clearBtn: true,
+		})
+		.on('changeDate', function(e) {
+			// Revalidate the date field
+			selected_start_date = e.date;
+		});
+		$('#endDate').datepicker({
+			autoclose: true,
+			format: 'dd/mm/yyyy',
+			todayBtn: "linked",
+			clearBtn: true,
+		})
+		.on('changeDate', function(e) {
+			// Revalidate the date field
+			selected_end_date = e.date;
+		});
+		$.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+			var date = new Date(data[3]);
+			if (date >= selected_start_date && date <= selected_end_date)
+				return true;
+			// console.log(startdate);
+			// var min = parseInt( $('#startDate').val(), 10 );
+			// var max = parseInt( $('#endDate').val(), 10 );
+			// var age = parseFloat( data[3] ) || 0; // use data for the age column
+
+			// if ( ( isNaN( min ) && isNaN( max ) ) ||
+			// 	( isNaN( min ) && age <= max ) ||
+			// 	( min <= age   && isNaN( max ) ) ||
+			// 	( min <= age   && age <= max ) )
+			// {
+			// 	return true;
+			// }
+			return false;
+		});
 	});
 </script>
 {% endblock %}

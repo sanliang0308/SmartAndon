@@ -14,7 +14,8 @@
 					<thead>
 						<tr>
 							<th>Index</th>
-							<th>Issue</th>
+							<th>Workstation ID</th>
+							<th>Concern</th>
 							<th>Acked Timestamp</th>
 							<th>SupportPersonnel</th>
 							<th>Remarks</th>
@@ -24,7 +25,8 @@
 						{% for Acknowledgement in Acknowledgements %}
 							<tr>
 								<td>{{ Acknowledgement.id }}</td>
-								<td>{{ Acknowledgement.issue }}</td>
+								<td>{{ Acknowledgement.issue.workstation_id }}</td>
+								<td>{{ Acknowledgement.issue.concern }}</td>
 								<td>{{ Acknowledgement.issue_acked_timestamp }}</td>
 								<td>{{ Acknowledgement.supportPersonnel }}</td>
 								<td>{{ Acknowledgement.remarks }}</td>
@@ -34,7 +36,8 @@
 					<tfoot>
 						<tr>
 							<th>Index</th>
-							<th>Issue</th>
+							<th>Workstation Id</th>
+							<th>Concern</th>
 							<th>Acked Timestamp</th>
 							<th>SupportPersonnel</th>
 							<th>Remarks</th>
@@ -51,15 +54,6 @@
 <!-- Page Script -->
 <script>
 	$(function () {
-		var datas = [];
-		{% for SolvedAcknowledgementBySupportPersonnel in SolvedAcknowledgementsBySupportPersonnel %}
-		var data = { label: '{{ SolvedAcknowledgementBySupportPersonnel.name }}', value: {% widthratio SolvedAcknowledgementBySupportPersonnel.count_acknowledgement TotalSolvedAcknowledgements 100.0 %} };
-		datas.push(data);
-		{% endfor %}
-		var DonutChartData = {element: 'donut_chart', data: datas, colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'], formatter: function(y) { return y + '%' }, resize: true};
-		//Widgets count
-		$('.count-to').countTo();
-		Morris.Donut(DonutChartData);
 	});
 </script>
 {% endblock %}
