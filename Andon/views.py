@@ -50,9 +50,10 @@ def sendNotification(request):
 		except Exception as e:
 			request.session['ErrMsg'] = str(e)
 			# return HttpResponse(e)
-		# e = sendSMSrequest(station_id, recipient_phoneNo, concern, timestamp)
-		# if e is not None:
-		# 	request.session['ErrMsg'] = str(e)
+		try:
+			sendSMS(station_id, recipient_email, concern, timestamp)
+		except Exception as e:
+			request.session['ErrMsg'] = str(e)
 			# return HttpResponse(e)
 		return HttpResponseRedirect(reverse('Andon:index'))
 	except Exception as e:
@@ -76,6 +77,22 @@ def sendMail(station_id, recipient_email, concern_name, timestamp):
 	data_json = json.dumps(data)
 	headers = {'Content-type': 'application/json'}
 	response = requests.post(url, data = data_json, headers = headers)
+
+def sendSMS(request, station_id, number, concern_name, timestamp):
+	if QIO:
+		url = 'http://10.228.240.51:3000/MMservices/SMS'
+	else:
+		url = 'http://127.0.0.1:3000/MMservices/SMS'
+	TO = [number]
+	SUBJECT = '%s Raised on Station ID: %s @ %s' % (concern_name, station_id, timestamp)
+	data = {
+		"number": TO,
+		"message": SUBJECT
+	}
+	data_json = json.dumps(data)
+	headers = {'Content-type': 'application/json'}
+	response = requests.post(url, data = data_json, headers = headers)
+	return HttpResponse(response)
 
 def testnotify(request):
 	# if QIO:
