@@ -15,8 +15,7 @@ class SupportPersonnelAdmin(admin.ModelAdmin):
 	ordering = ('name','-isActive',)
 	
 class NotifyRelationshipAdmin(admin.ModelAdmin):
-	list_display = ('id', 'concern', 'supportPersonnel')
-	fields = ('concern', 'supportPersonnel')
+	list_display = ('id', 'getConcern', 'getSupportPersonnel')
 	ordering = ('id',)
 	
 admin.site.register(Concern, ConcernAdmin)

@@ -1,9 +1,12 @@
 FROM python:2.7-slim
 WORKDIR /app
 ADD . /app
-RUN apt-get update
-RUN apt-get install -y libmariadbclient
+RUN apt-get -qq update
+RUN apt-get install -y -qq libmysqlclient-dev
+RUN apt-get install -y -qq gcc
+RUN yes | pip install mysqlclient
+RUN yes | pip install mysql-python
 RUN pip install django==1.11.3
 RUN pip install requests
 EXPOSE 8000
-CMD while(1); do echo "Hi"; done
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

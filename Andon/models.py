@@ -77,6 +77,12 @@ class NotifyRelationship(models.Model):
 	supportPersonnel = models.ForeignKey('SupportPersonnel', models.DO_NOTHING, db_column='SupportPersonnel_Id')  # Field name made lowercase.
 	concern = models.ForeignKey(Concern, models.DO_NOTHING, db_column='Concern_Id')  # Field name made lowercase.
 	
+	def getConcern(self):
+		return self.concern
+
+	def getSupportPersonnel(self):
+		return self.supportPersonnel
+
 	class Meta:
 		managed = True
 		db_table = 'notifyrelationship'

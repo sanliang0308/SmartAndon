@@ -27,7 +27,7 @@ SECRET_KEY = 'mcx_zvskpbj+2g3*uf+@s3dv#uvo3+zh_thweb5+zpm-w42rq8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.228.240.100", "10.228.241.101", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 QIO = True
 

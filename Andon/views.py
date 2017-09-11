@@ -78,7 +78,7 @@ def sendMail(station_id, recipient_email, concern_name, timestamp):
 	headers = {'Content-type': 'application/json'}
 	response = requests.post(url, data = data_json, headers = headers)
 
-def sendSMS(request, station_id, number, concern_name, timestamp):
+def sendSMS(station_id, number, concern_name, timestamp):
 	if QIO:
 		url = 'http://10.228.240.51:3000/MMservices/SMS'
 	else:
@@ -92,7 +92,6 @@ def sendSMS(request, station_id, number, concern_name, timestamp):
 	data_json = json.dumps(data)
 	headers = {'Content-type': 'application/json'}
 	response = requests.post(url, data = data_json, headers = headers)
-	return HttpResponse(response)
 
 def testnotify(request):
 	# if QIO:
