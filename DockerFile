@@ -2,6 +2,7 @@ FROM python:2.7-slim
 WORKDIR /app
 ADD . /app
 RUN apt-get -qq update
+RUN apt-get install nano
 RUN apt-get install -y -qq libmysqlclient-dev
 RUN apt-get install -y -qq gcc
 RUN yes | pip install mysqlclient
